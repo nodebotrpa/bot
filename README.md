@@ -1,8 +1,8 @@
 # BOT
 NodeBot is an application for process automation
 
-##Installation
+## Installation
 Download zip file and unzip
 
-##Run
+## Run
 Run nbworker.exe application
