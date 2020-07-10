@@ -6,3 +6,6 @@ NodeBot is an application for process automation
 
 ## Run
 Run nbworker.exe application
+
+## Documentation
+[Visit documentation](https://github.com/nodebotrpa/bot/wiki)
