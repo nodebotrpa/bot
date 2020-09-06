@@ -4,7 +4,7 @@
 bool driver::createSession(){
 	http.Header("Content-Type","application/json");
 	http.Url(driverUrl+"/session");
-	http.Post(cap.getJson());
+	http.Post(getCapabilities());
 	String content = http.Execute();
 	String dirs;
 	if (http.GetError() != 0) {
@@ -12,12 +12,12 @@ bool driver::createSession(){
 		GetCurrentDirectory(512,dir);//GetModuleFileName
 		dirs<<dir;
 		dirs.Cat("\\driver");
-		ShellExecute(NULL,"open","chromedriver.exe",NULL,dirs,SW_HIDE);
+		ShellExecute(NULL,"open",getDriverExe(),NULL,dirs,SW_HIDE);
 		content = http.Execute();
 	}
 	if (http.GetError() != 0) {
 		lastError = "Driver is not running";
-		MessageBox(NULL,"Can not start chromedriver.exe at "+dirs,"Error",MB_ICONERROR);
+		MessageBox(NULL,"Can not start "+getDriverExe()+" at "+dirs,"Error",MB_ICONERROR);
 		return false;
 	}
 	else {
@@ -30,10 +30,19 @@ bool driver::createSession(){
 				session = v["sessionId"];
 			}
 			//LOG"SessionId:"+session+"\n");
-		}
-		else {
-			lastError = http.GetErrorDesc();
-			return false;
+		} else {
+			if (http.GetStatusCode() == 500) {
+				String a = http.GetContent();
+				Value err =  ParseJSON(a);
+				Value msg = err["value"];
+				String errmsg = msg["message"];
+				lastError = "You may need to upgrade driver version. "+errmsg;
+				return false;
+			}
+			else {
+				lastError = http.GetErrorDesc();
+				return false;
+			}
 		}
 	}
 	return true;
@@ -87,7 +96,11 @@ bool driver::navigateTo(String url){
 		}
 		else {
 			if (http.GetStatusCode() == 500) {
-				lastError = "PageLoad timeout may be too short. Change timeout properties at new session node or check chromedriver log file for error description";
+				String a = http.GetContent();
+				Value err =  ParseJSON(a);
+				Value msg = err["value"];
+				String errmsg = msg["message"];
+				lastError = "PageLoad timeout may be too short or bad url address. "+errmsg;
 				return false;
 			} else {
 				lastError = http.GetErrorDesc();

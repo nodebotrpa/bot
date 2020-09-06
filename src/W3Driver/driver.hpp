@@ -72,52 +72,8 @@ public :
 	}
 };
 
-
-struct capabilities {
-	capabilities(){};
-protected :
-	String capTemp;
-	void setParameters(String browser) {
-		if (browser == "IEXPLORER") {
-			capTemp   = "{\"desiredCapabilities\":\n";
-			capTemp.Cat("  {\"platform\":\"WINDOWS\",\n");
-			capTemp.Cat("   \"ensureCleanSession\":true,\n");
-			capTemp.Cat("   \"browserName\":\"internet explorer\",\n");
-			capTemp.Cat("   \"version\":\"\"\n");
-			capTemp.Cat("  }\n");
-			capTemp.Cat("}");
-		}
-		if (browser == "CHROME") {
-			capTemp   = "{\"capabilities\":{\n";
-			capTemp.Cat("  \"firstMatch\":[\n");
-			capTemp.Cat("    {\"browserName\":\"chrome\",\n");
-			capTemp.Cat("	  \"goog:chromeOptions\":{\n");
-			capTemp.Cat("      \"excludeSwitches\":[\"enable-automation\"],\n");
-			capTemp.Cat("      \"useAutomationExtension\":false,\n");
-			capTemp.Cat("      \"args\":[\"--disable-extensions\",\"--disable-infobars\"],\n");
-			capTemp.Cat("      \"extensions\":[]\n");
-			capTemp.Cat("      }\n");
-			capTemp.Cat("    }]},\n");
-			capTemp.Cat("\"desiredCapabilities\":{\n");
-			capTemp.Cat(" \"browserName\":\"chrome\",\n");
-			capTemp.Cat(" \"goog:chromeOptions\":{\n");
-			capTemp.Cat("  \"excludeSwitches\":[\"enable-automation\"],\n");
-			capTemp.Cat("  \"useAutomationExtension\":false,\n");
-			capTemp.Cat("  \"args\":[\"--disable-extensions\",\"--disable-infobars\"],\n");
-			capTemp.Cat("  \"extensions\":[]\n");
-			capTemp.Cat("   }\n");
-			capTemp.Cat("  }\n");
-			capTemp.Cat("}");
-		};
-	}
-public :
-	void setBrowser(String browser){setParameters(browser);};
-	String getJson(){return capTemp;};
-	
-};
 class driver {
 protected :
-	capabilities cap;
 	keyCodes keys;
 	String driverUrl = "";
 	String browser;
@@ -126,19 +82,29 @@ protected :
 	String lastElementHandle;
 	String session;
 	bool navigate(String direction);
-	
+	ValueMap browserConf;
 public :
-	void setBrowser(String b)
-	   {browser = b;
-	    if (browser=="CHROME") driverUrl = "http://localhost:9515";
-		if (browser=="IEXPLORER") driverUrl = "http://localhost:5555";
-		cap.setBrowser(browser);
+	void setBrowser(String b){
+		Value conf;
+		browser = b;
+		if (IsNull(browserConf[browser])) {
+			String s = LoadFile(GetDataFile(browser+".settings"));
+			conf = ParseJSON(s);
+			if (AsJSON(conf)=="null") {
+				MessageBoxA(NULL,"Can not load "+browser+".settings","Driver Error",NULL);
+			} else {
+				browserConf.Add(browser,conf);
+			}
+		}
+		Value c = browserConf[browser];
+		driverUrl = c["url"];
 		};
-	String Test() {cap.setBrowser("CHROME"); return cap.getJson();}
 	void setProxy(String host, int port){http.Proxy(host,port);};
 	bool useSession(String newSession);
 	String getSession(){return session;};
 	String getError(){return lastError;};
+	String getCapabilities(){Value c  = browserConf[browser]; return AsJSON(c);}
+	String getDriverExe(){Value c  = browserConf[browser]; return c["driver"];};
 	void setError(String err);
 	bool createSession();
 	bool deleteSession();
