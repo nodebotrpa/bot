@@ -1,0 +1,22 @@
+{"url":"http://localhost:9515",
+"driver":"chromedriver.exe",
+"capabilities":{
+	"firstMatch":[
+	  {"browserName":"chrome",
+		"goog:chromeOptions":{
+			"debuggerAddress":"localhost:9222",
+			"args":["--disable-extensions","--disable-infobars"],
+			"extensions":[]
+		}
+	  }
+	]
+},
+"desiredCapabilities":{
+	"browserName":"chrome",
+	"goog:chromeOptions":{
+		"debuggerAddress":"localhost:9222",
+		"args":["--disable-extensions","--disable-infobars"],
+		"extensions":[]
+	}
+}
+}
