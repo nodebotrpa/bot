@@ -83,6 +83,11 @@ protected :
 	String session;
 	bool navigate(String direction);
 	ValueMap browserConf;
+	bool isResponseOK();
+	bool getJsonValue(String name,String content, String &value);
+	bool getStringValue(String content, String &value);
+	bool getBooleanValue(String content, bool &value);
+	bool getNoneValue(String content);
 public :
 	void setBrowser(String b){
 		Value conf;
@@ -105,7 +110,7 @@ public :
 	String getError(){return lastError;};
 	String getCapabilities(){Value c  = browserConf[browser]; return AsJSON(c);}
 	String getDriverExe(){Value c  = browserConf[browser]; return c["driver"];};
-	void setError(String err);
+	void setError(String error);
 	bool createSession();
 	bool deleteSession();
 	bool navigateTo(String url);
@@ -116,6 +121,7 @@ public :
 	bool getUrl(String &url);
 	bool getAllSessions(String &handle);
 	bool setTimeout(String timeout, int seconds);
+	bool getTimeout(String timeout, int &seconds);
 	bool switchToWindow(String window);
 	bool getWindowHandle(String &handle);
 	bool closeWindow();
@@ -148,7 +154,7 @@ public :
 	bool mouseUp(String element, int button = 0);
 	bool clear(String element);
 	bool type(String element, String text);
-	bool getPageSource(String element, String &value);
+	bool getPageSource(String &value);
 	bool executeScript(String script, String &value, bool async = false);
 	bool getCookies(String &value);
 	bool getCookie(String name, String &value);
@@ -161,5 +167,6 @@ public :
 	bool takeScreenShot(String &value);
 	bool takeScreenShot(String element, String &value);
 	bool waitUntilPageLoad(bool wait = true);
+	bool waitUntilVisible(String element);
 };
 #endif
