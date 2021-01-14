@@ -1,0 +1,14 @@
+description "Test NodeBot W3Driver\377";
+
+uses
+	Core;
+
+file
+	errorcodes.hpp,
+	driver.cpp,
+	driver.hpp,
+	CHROME.settings,
+	TestDriver.cpp;
+
+mainconfig
+	"" = "";
