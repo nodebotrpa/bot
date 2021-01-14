@@ -1,7 +1,7 @@
 * How to use Driver
 1. Create a new project at IDE. 
 2. Add W3Driver files to project. 
-3. Must be a folder names as driver which contains selenium drivers.
+3. Must be a folder named as driver which contains selenium drivers.
 
 File Structure
 TestDriver.upp
