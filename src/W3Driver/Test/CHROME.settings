@@ -1,0 +1,25 @@
+{
+"url":"http://localhost:9515",
+"driver":"chromedriver.exe",
+"capabilities":{
+	"firstMatch":[
+	  {"browserName":"chrome",
+		"goog:chromeOptions":{
+			"excludeSwitches":["enable-automation"],
+			"useAutomationExtension":false,
+			"args":["--disable-extensions","--disable-infobars"],
+			"extensions":[]
+		}
+	  }
+	]
+},
+"desiredCapabilities":{
+	"browserName":"chrome",
+	"goog:chromeOptions":{
+		"excludeSwitches":["enable-automation"],
+		"useAutomationExtension":false,
+		"args":["--disable-extensions","--disable-infobars"],
+		"extensions":[]
+	}
+}
+}
